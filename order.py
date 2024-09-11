@@ -1,15 +1,22 @@
 class Order:
-    def __init__(self):
-        self.current_order = {}  # Dictionary to store items and their quantities
+    all_orders = []  # Track all order instances
 
-    def add_item(self, item, quantity):
-        if item in self.current_order:
-            self.current_order[item] += quantity  # Increment the quantity if item exists
-        else:
-            self.current_order[item] = quantity  
+    def __init__(self, customer, coffee, price):
+        from customer import Customer  # Local import to avoid circular dependency
+        from coffee import Coffee  # Local import to avoid circular dependency
 
-    def clear_order(self):
-        self.current_order.clear()  # Clear all items from the order.
+        if not isinstance(customer, Customer):
+            raise TypeError("Customer must be an instance of Customer class")
+        if not isinstance(coffee, Coffee):
+            raise TypeError("Coffee must be an instance of Coffee class")
+        if not isinstance(price, float) or not (1.0 <= price <= 10.0):
+            raise ValueError("Price must be a float between 1.0 and 10.0")
 
-    def get_order(self):
-        return self.current_order  # Return the current order as a dictionary.
+        self.customer = customer
+        self.coffee = coffee
+        self.price = price
+        Order.all_orders.append(self)  # Add the order to the class attribute list
+
+    def __repr__(self):
+        return (f"Order(customer={self.customer.name!r}, coffee={self.coffee.name!r}, "
+            f"price={self.price:.2f})")
